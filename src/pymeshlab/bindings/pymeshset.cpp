@@ -21,12 +21,14 @@
  *                                                                           *
  ****************************************************************************/
 #include "pymeshset.h"
+#include "pycamera.h"
 
 #include "docs/pymeshset_doc.h"
 #include "pymeshlab/helpers/common.h"
 #include "pymeshlab/meshset.h"
 #include <pybind11/eval.h>
 #include <vcg/../wrap/io_trimesh/import_obj.h>
+#include <vcg/complex/algorithms/shot.h>
 
 namespace py = pybind11;
 
@@ -143,4 +145,38 @@ void pymeshlab::initMeshSet(pybind11::module& m)
 		doc::PYMS_FILTER_PARAMETER_VALUES);
 	meshSetClass.def(
 		"print_filter_script", &MeshSet::printFilterScript, doc::PYMS_PRINT_FILTER_SCIRPT);
+
+	.def("add_camera", [](pymeshlab::MeshSet& ms, const vcg::Shotf& camera) {
+            ms.cm.shot = camera;
+        }, "Add a camera to the current mesh", py::arg("camera"));
+
+    .def("get_camera", [](pymeshlab::MeshSet& ms) -> vcg::Shotf {
+            return ms.cm.shot;
+        }, "Get the camera associated with the current mesh");
+
+    .def("has_camera", [](pymeshlab::MeshSet& ms) {
+            return ms.cm.IsCameraPresent();
+        }, "Check if the current mesh has a camera");
+
+    .def("clear_camera", [](pymeshlab::MeshSet& ms) {
+            ms.cm.ClearShot();
+        }, "Remove the camera from the current mesh");
+
+    .def("add_raster_camera", [](pymeshlab::MeshSet& ms,
+                                    const std::string& shot_filename,
+                                    const std::string& image_filename) {
+            // Add the camera to the raster layer system
+            ms.addRasterCamera(shot_filename, image_filename);
+        }, "Add a raster camera to the mesh set",
+           py::arg("shot_filename"),
+           py::arg("image_filename"));
+
+    .def("compute_texmapping_from_camera", [](pymeshlab::MeshSet& ms,
+                                                bool per_camera_uvs = true,
+                                                float border = 2.0f) {
+            // Compute texture mapping using the camera
+            ms.computeTexMappingFromCamera(per_camera_uvs, border);
+        }, "Compute texture mapping from camera parameters",
+           py::arg("per_camera_uvs") = true,
+           py::arg("border") = 2.0f);
 }
