@@ -50,7 +50,7 @@ PYBIND11_MODULE(PYMESHLAB_MODULE_NAME, m)
 	pymeshlab::initMeshSet(m);         // MeshDocument Class
 	pymeshlab::initPercentageValue(m); // PercentageValue Class
 	pymeshlab::initPureValue(m);       // Pure Class
-	pymeshlab::initCamera(m)           // shotf rastering CLass
+	pymeshlab::initCamera(m);          // shotf rastering CLass
 
 	// binding the exceptions
 	pymeshlab::initExceptions(m); // Exceptions
