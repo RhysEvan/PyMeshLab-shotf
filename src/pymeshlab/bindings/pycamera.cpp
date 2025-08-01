@@ -20,7 +20,6 @@
 ****************************************************************************/
 #include "pycamera.h"
 #include <vcg/math/shot.h>
-#include <vcg/complex/algorithms/shot.h>
 #include <vcg/complex/algorithms/camera_utils.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
